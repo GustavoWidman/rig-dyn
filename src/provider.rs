@@ -1,7 +1,7 @@
-use std::fmt::Display;
-
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "serde")]
+use std::fmt::Display;
 
 use rig::providers::{
     anthropic as Anthropic, azure as Azure, cohere as Cohere, deepseek as DeepSeek,
