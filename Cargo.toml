@@ -1,0 +1,19 @@
+[package]
+name = "rig-dyn"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+serde_plain = { version = "1.0.2", optional = true }
+anyhow = "1.0.97"
+serde = { version = "1.0.219", optional = true, features = ["derive"] }
+rig-core = "0.9.1"
+async-trait = "0.1.87"
+
+[features]
+serde = ["dep:serde", "dep:serde_plain"]
+
+[dev-dependencies]
+tokio = { version = "1.43.0", features = ["full"] }
+rig-dyn = { path = ".", features = ["serde"] }
+serde_plain = "1.0.2"
