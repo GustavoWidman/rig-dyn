@@ -1,5 +1,10 @@
 [package]
 name = "rig-dyn"
+authors = ["Gustavo Widman <admin@r3dlust.com>"]
+license = "MIT"
+description = "A dynamic client-provider abstraction framework for Rust applications on top of rig-core"
+repository = "https://github.com/GustavoWidman/rig-dyn"
+homepage = "https://github.com/GustavoWidman/rig-dyn"
 version = "0.1.0"
 edition = "2024"
 
