@@ -114,7 +114,7 @@ impl TryFrom<String> for Provider {
 impl Display for Provider {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         serde_plain::to_string(self)
-            .map_err(|_| std::fmt::Error::default())?
+            .map_err(|_| std::fmt::Error)?
             .fmt(f)
     }
 }

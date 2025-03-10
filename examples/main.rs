@@ -28,11 +28,8 @@ async fn main() -> Result<()> {
 
     let response = completion_model.completion(request).await?.first();
 
-    match response {
-        message::AssistantContent::Text(content) => {
-            println!("{}", content.text);
-        }
-        _ => {}
+    if let message::AssistantContent::Text(content) = response {
+        println!("{}", content.text);
     }
 
     Ok(())
