@@ -10,9 +10,12 @@ pub enum Client {
     Galadriel(providers::galadriel::Client),
     Gemini(providers::gemini::Client),
     Groq(providers::groq::Client),
+    HuggingFace(providers::huggingface::Client),
     Hyperbolic(providers::hyperbolic::Client),
+    Mira(providers::mira::Client),
     Moonshot(providers::moonshot::Client),
     OpenAI(providers::openai::Client),
+    OpenRouter(providers::openrouter::Client),
     Ollama(providers::ollama::Client),
     Perplexity(providers::perplexity::Client),
     Xai(providers::xai::Client),
@@ -72,7 +75,8 @@ impl Client {
             {
                 Anthropic, Azure, Cohere, DeepSeek,
                 Galadriel, Gemini, Groq, Hyperbolic,
-                Moonshot, OpenAI, Ollama, Perplexity, Xai
+                Moonshot, OpenAI, Ollama, Perplexity, Xai,
+                HuggingFace, OpenRouter, Mira
             }
         )
     }
@@ -92,7 +96,8 @@ impl Client {
             },
             {
                 Anthropic, DeepSeek, Galadriel,
-                Groq, Hyperbolic, Moonshot, Perplexity
+                Groq, Hyperbolic, Moonshot, Perplexity,
+                Mira, HuggingFace, OpenRouter
             },
             |client: &providers::cohere::Client| input_type.map(|input_type| {
                 Box::new(
@@ -115,7 +120,8 @@ impl Client {
             },
             {
                 Anthropic, DeepSeek, Galadriel,
-                Groq, Hyperbolic, Moonshot, Perplexity
+                Groq, Hyperbolic, Moonshot, Perplexity,
+                Mira, HuggingFace, OpenRouter
             },
             |client: &providers::cohere::Client| input_type.map(|input_type| {
                 Box::new(

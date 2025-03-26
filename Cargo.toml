@@ -12,7 +12,7 @@ edition = "2024"
 serde_plain = { version = "1.0.2", optional = true }
 anyhow = "1.0.97"
 serde = { version = "1.0.219", optional = true, features = ["derive"] }
-rig-core = "0.9.1"
+rig-core = "0.10.0"
 async-trait = "0.1.87"
 
 [features]

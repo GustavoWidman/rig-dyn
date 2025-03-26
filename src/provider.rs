@@ -4,9 +4,12 @@ use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 
 use rig::providers::{
-    anthropic as Anthropic, azure as Azure, cohere as Cohere, deepseek as DeepSeek,
-    galadriel as Galadriel, gemini as Gemini, groq as Groq, hyperbolic as Hyperbolic,
-    moonshot as Moonshot, ollama as Ollama, openai as OpenAI, perplexity as Perplexity, xai as Xai,
+    anthropic as Anthropic,
+    azure::{self as Azure, AzureOpenAIAuth},
+    cohere as Cohere, deepseek as DeepSeek, galadriel as Galadriel, gemini as Gemini, groq as Groq,
+    huggingface as HuggingFace, hyperbolic as Hyperbolic, mira as Mira, moonshot as Moonshot,
+    ollama as Ollama, openai as OpenAI, openrouter as OpenRouter, perplexity as Perplexity,
+    xai as Xai,
 };
 
 use crate::client::Client;
@@ -56,11 +59,24 @@ pub enum Provider {
     #[cfg_attr(feature = "serde", serde(rename = "groq"))]
     Groq,
 
+    /// HuggingFace API
+    ///
+    /// Alias: `huggingface`, `hf`
+    #[cfg_attr(feature = "serde", serde(rename = "huggingface"))]
+    #[cfg_attr(feature = "serde", serde(alias = "hf"))]
+    HuggingFace,
+
     /// Hyperbolic API
     ///
     /// Alias: `hyperbolic`
     #[cfg_attr(feature = "serde", serde(rename = "hyperbolic"))]
     Hyperbolic,
+
+    /// Mira API
+    ///
+    /// Alias: `mira`
+    #[cfg_attr(feature = "serde", serde(rename = "mira"))]
+    Mira,
 
     /// Moonshot API
     ///
@@ -71,10 +87,16 @@ pub enum Provider {
     /// OpenAI API
     ///
     /// Alias: `openai`, `openai-api`, `openai-compatible`
-    #[cfg_attr(feature = "serde", serde(alias = "openai"))]
+    #[cfg_attr(feature = "serde", serde(rename = "openai"))]
     #[cfg_attr(feature = "serde", serde(alias = "openai-api"))]
     #[cfg_attr(feature = "serde", serde(alias = "openai-compatible"))]
     OpenAI,
+
+    /// OpenRouter API
+    ///
+    /// Alias: `openrouter`
+    #[cfg_attr(feature = "serde", serde(rename = "openrouter"))]
+    OpenRouter,
 
     /// Ollama API
     ///
@@ -123,7 +145,8 @@ macro_rules! provider_client {
 	(
 		$self:expr, $api_key:expr, $custom_url:expr,
 		{$($custom_url_variant:ident),*}, {$($standard_variant:ident),*},
-		$azure_expr:expr, $anthropic_expr:expr, $galadriel_expr:expr, $ollama_expr:expr
+		$azure_expr:expr, $anthropic_expr:expr, $galadriel_expr:expr, $ollama_expr:expr,
+        $mira_expr:expr
 	) => {
 		// get the rig provider module by lowercasing the variant name
 		match $self {
@@ -146,6 +169,7 @@ macro_rules! provider_client {
 			Provider::Azure => $azure_expr
 			Provider::Galadriel => $galadriel_expr,
 			Provider::Ollama => $ollama_expr,
+            Provider::Mira => $mira_expr,
         }
 	}
 }
@@ -156,14 +180,14 @@ impl Provider {
             {
                 Cohere, DeepSeek, Gemini,
                 Groq, Hyperbolic, Moonshot,
-                OpenAI, Perplexity
+                OpenAI, Perplexity, OpenRouter
             },
             {
-                Xai
+                Xai, HuggingFace // todo add huggingface custom url (requires a custom subprovider)
             },
             match custom_url {
                 Some(url) => {
-                    Client::Azure(Azure::Client::new(api_key, "2024-10-21", url))
+                    Client::Azure(Azure::Client::new(AzureOpenAIAuth::Token(api_key.to_string()), "2024-10-21", url))
                 }
                 None => anyhow::bail!("Azure API requires a custom url"),
             },
@@ -186,7 +210,8 @@ impl Provider {
                 Some(url) => {
                     Client::Ollama(Ollama::Client::from_url(url))
                 }
-            }
+            },
+            Client::Mira(Mira::Client::new(api_key)?)
         ))
     }
 }
