@@ -18,6 +18,7 @@ pub enum Client {
     OpenRouter(providers::openrouter::Client),
     Ollama(providers::ollama::Client),
     Perplexity(providers::perplexity::Client),
+    Together(providers::together::Client),
     Xai(providers::xai::Client),
 }
 
@@ -76,7 +77,7 @@ impl Client {
                 Anthropic, Azure, Cohere, DeepSeek,
                 Galadriel, Gemini, Groq, Hyperbolic,
                 Moonshot, OpenAI, Ollama, Perplexity, Xai,
-                HuggingFace, OpenRouter, Mira
+                HuggingFace, OpenRouter, Mira, Together
             }
         )
     }
@@ -92,7 +93,7 @@ impl Client {
         embedding_model!(
             self, model, input_type,
             {
-                Azure, Gemini, OpenAI, Xai, Ollama
+                Azure, Gemini, OpenAI, Xai, Ollama, Together
             },
             {
                 Anthropic, DeepSeek, Galadriel,
@@ -116,7 +117,7 @@ impl Client {
         embedding_model_with_ndims!(
             self, model, ndims, input_type,
             {
-                Azure, Gemini, OpenAI, Xai, Ollama
+                Azure, Gemini, OpenAI, Xai, Ollama, Together
             },
             {
                 Anthropic, DeepSeek, Galadriel,

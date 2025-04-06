@@ -9,7 +9,7 @@ use rig::providers::{
     cohere as Cohere, deepseek as DeepSeek, galadriel as Galadriel, gemini as Gemini, groq as Groq,
     huggingface as HuggingFace, hyperbolic as Hyperbolic, mira as Mira, moonshot as Moonshot,
     ollama as Ollama, openai as OpenAI, openrouter as OpenRouter, perplexity as Perplexity,
-    xai as Xai,
+    together as Together, xai as Xai,
 };
 
 use crate::client::Client;
@@ -110,6 +110,12 @@ pub enum Provider {
     #[cfg_attr(feature = "serde", serde(rename = "perplexity"))]
     Perplexity,
 
+    /// Together API
+    ///
+    /// Alias: `together`
+    #[cfg_attr(feature = "serde", serde(rename = "together"))]
+    Together,
+
     /// Xai API
     ///
     /// Alias: `xai`
@@ -183,7 +189,8 @@ impl Provider {
                 OpenAI, Perplexity, OpenRouter
             },
             {
-                Xai, HuggingFace // todo add huggingface custom url (requires a custom subprovider)
+                Xai, HuggingFace, // todo add huggingface custom url (requires a custom subprovider)
+                Together
             },
             match custom_url {
                 Some(url) => {

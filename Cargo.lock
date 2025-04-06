@@ -947,9 +947,9 @@ dependencies = [
 
 [[package]]
 name = "rig-core"
-version = "0.10.0"
+version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "92b71cce9455ff993d7bd41d90cae125127a41cb4f8b6da57877eb1598cb9206"
+checksum = "ff893305131b471009ab11df388612beb603ed94bb12412c256fe197b7591aa6"
 dependencies = [
  "async-stream",
  "base64",
@@ -968,7 +968,7 @@ dependencies = [
 
 [[package]]
 name = "rig-dyn"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1338,9 +1338,9 @@ dependencies = [
 
 [[package]]
 name = "tokio"
-version = "1.44.1"
+version = "1.44.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f382da615b842244d4b8738c82ed1275e6c5dd90c459a30941cd07080b06c91a"
+checksum = "e6b88822cbe49de4185e3a4cbf8321dd487cf5fe0c5c65695fef6346371e9c48"
 dependencies = [
  "backtrace",
  "bytes",
