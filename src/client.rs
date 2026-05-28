@@ -152,12 +152,12 @@ impl Client {
         embedding_model!(
             self, model, input_type,
             {
-                Azure, Gemini, OpenAI, Ollama, Together
+                Azure, Gemini, OpenAI, Ollama, Together, OpenRouter
             },
             {
                 Anthropic, DeepSeek, Galadriel,
                 Groq, Hyperbolic, Moonshot, Perplexity,
-                Mira, HuggingFace, OpenRouter, Xai
+                Mira, HuggingFace, Xai
             },
             |client: &providers::cohere::Client| input_type.map(|input_type| {
                 Box::new(
