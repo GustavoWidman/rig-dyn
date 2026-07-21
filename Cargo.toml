@@ -5,20 +5,27 @@ license = "MIT"
 description = "A dynamic client-provider abstraction framework for Rust applications on top of rig-core"
 repository = "https://github.com/GustavoWidman/rig-dyn"
 homepage = "https://github.com/GustavoWidman/rig-dyn"
-version = "1.0.3"
+version = "1.0.4"
 edition = "2024"
 
 [dependencies]
 serde_plain = { version = "1.0.2", optional = true }
-anyhow = "1.0.102"
-serde = { version = "1.0.228", optional = true, features = ["derive"] }
-rig-core = "0.35.0"
-async-trait = "0.1.88"
+#serde_plain = { version = "1.0.2" }
+
+anyhow = "1.0.104"
+
+# TODO schemars (in my thesis requires this version)
+serde = { version = "1.0.194", optional = true, features = ["derive"] }
+#serde = { version = "1.0.229", features = ["derive"] }
+
+rig = "0.40.0"
+async-trait = "0.1.91"
 
 [features]
+default =  ["dep:serde"]
 serde = ["dep:serde", "dep:serde_plain"]
 
 [dev-dependencies]
-tokio = { version = "1.52.1", features = ["full"] }
+tokio = { version = "1.53.1", features = ["full"] }
 rig-dyn = { path = ".", features = ["serde"] }
 serde_plain = "1.0.2"

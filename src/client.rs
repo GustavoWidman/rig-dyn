@@ -1,5 +1,7 @@
-use crate::traits::{CompletionModel, DynEmbeddingModel, RigCompletionModelAdapter};
-use rig::client::FinalCompletionResponse;
+use crate::traits::{
+    CompletionModel, DynEmbeddingModel, FinalCompletionResponse, RigCompletionModelAdapter,
+};
+
 use rig::client::{CompletionClient, EmbeddingsClient};
 use rig::completion::{self, CompletionError, CompletionRequest, CompletionResponse};
 use rig::providers;
@@ -11,19 +13,24 @@ pub enum Client {
     Azure(providers::azure::Client),
     Cohere(providers::cohere::Client),
     DeepSeek(providers::deepseek::Client),
-    Galadriel(providers::galadriel::Client),
     Gemini(providers::gemini::Client),
     Groq(providers::groq::Client),
     HuggingFace(providers::huggingface::Client),
     Hyperbolic(providers::hyperbolic::Client),
+    // TODO Llamafile
+    // TODO MiniMax
     Mira(providers::mira::Client),
+    // TODO Mistral
     Moonshot(providers::moonshot::Client),
+    Ollama(providers::ollama::Client),
     OpenAI(providers::openai::Client),
     OpenRouter(providers::openrouter::Client),
-    Ollama(providers::ollama::Client),
     Perplexity(providers::perplexity::Client),
     Together(providers::together::Client),
+    // TODO Voyage AI
     Xai(providers::xai::Client),
+    // TODO Xiao
+    // TODO Z.ai
 }
 
 #[derive(Clone)]
@@ -47,8 +54,9 @@ impl completion::CompletionModel for RigClientCompletionModelAdapter {
     fn completion(
         &self,
         request: CompletionRequest,
-    ) -> impl std::future::Future<Output = Result<CompletionResponse<Self::Response>, CompletionError>>
-           + rig::wasm_compat::WasmCompatSend {
+    ) -> impl std::future::Future<
+        Output = Result<CompletionResponse<Self::Response>, CompletionError>,
+    > + rig::wasm_compat::WasmCompatSend {
         let client = self.client.clone();
         let model = self.model.clone();
 
@@ -129,7 +137,7 @@ impl Client {
             self, model,
             {
                 Anthropic, Azure, Cohere, DeepSeek,
-                Galadriel, Gemini, Groq, Hyperbolic,
+                Gemini, Groq, Hyperbolic,
                 Moonshot, OpenAI, Ollama, Perplexity, Xai,
                 HuggingFace, OpenRouter, Mira, Together
             }
@@ -155,7 +163,7 @@ impl Client {
                 Azure, Gemini, OpenAI, Ollama, Together, OpenRouter
             },
             {
-                Anthropic, DeepSeek, Galadriel,
+                Anthropic, DeepSeek,
                 Groq, Hyperbolic, Moonshot, Perplexity,
                 Mira, HuggingFace, Xai
             },
@@ -179,7 +187,7 @@ impl Client {
                 Azure, Gemini, OpenAI, Ollama, Together
             },
             {
-                Anthropic, DeepSeek, Galadriel,
+                Anthropic, DeepSeek,
                 Groq, Hyperbolic, Moonshot, Perplexity,
                 Mira, HuggingFace, OpenRouter, Xai
             },

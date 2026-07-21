@@ -3,15 +3,15 @@ use serde::{Deserialize, Serialize};
 #[cfg(feature = "serde")]
 use std::fmt::Display;
 
+use rig::client::Nothing;
 use rig::providers::{
     anthropic as Anthropic,
     azure::{self as Azure, AzureOpenAIAuth},
-    cohere as Cohere, deepseek as DeepSeek, galadriel as Galadriel, gemini as Gemini, groq as Groq,
+    cohere as Cohere, deepseek as DeepSeek, gemini as Gemini, groq as Groq,
     huggingface as HuggingFace, hyperbolic as Hyperbolic, mira as Mira, moonshot as Moonshot,
     ollama as Ollama, openai as OpenAI, openrouter as OpenRouter, perplexity as Perplexity,
     together as Together, xai as Xai,
 };
-use rig::client::Nothing;
 
 use crate::client::Client;
 
@@ -41,12 +41,6 @@ pub enum Provider {
     /// Alias: `deepseek`
     #[cfg_attr(feature = "serde", serde(rename = "deepseek"))]
     DeepSeek,
-
-    /// Galadriel API
-    ///
-    /// Alias: `galadriel`
-    #[cfg_attr(feature = "serde", serde(rename = "galadriel"))]
-    Galadriel,
 
     /// Gemini API
     ///
@@ -152,7 +146,7 @@ macro_rules! provider_client {
 	(
 		$self:expr, $api_key:expr, $custom_url:expr,
 		{$($custom_url_variant:ident),*}, {$($standard_variant:ident),*},
-		$azure_expr:expr, $anthropic_expr:expr, $galadriel_expr:expr, $ollama_expr:expr,
+		$azure_expr:expr, $anthropic_expr:expr, $ollama_expr:expr,
         $mira_expr:expr
 	) => {
 		// get the rig provider module by lowercasing the variant name
@@ -177,7 +171,6 @@ macro_rules! provider_client {
             )*
 			Provider::Anthropic => $anthropic_expr,
 			Provider::Azure => $azure_expr,
-			Provider::Galadriel => $galadriel_expr,
 			Provider::Ollama => $ollama_expr,
             Provider::Mira => $mira_expr,
         }
@@ -213,17 +206,6 @@ impl Provider {
                     Client::Anthropic(builder.base_url(url).build()?)
                 } else {
                     Client::Anthropic(builder.build()?)
-                }
-            },
-            match custom_url {
-                None => Client::Galadriel(Galadriel::Client::new(api_key)?),
-                Some(url) => {
-                    Client::Galadriel(
-                        Galadriel::Client::builder()
-                            .api_key(api_key)
-                            .base_url(url)
-                            .build()?
-                    )
                 }
             },
             match custom_url {
