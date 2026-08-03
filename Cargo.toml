@@ -18,7 +18,8 @@ anyhow = "1.0.104"
 serde = { version = "1.0.194", optional = true, features = ["derive"] }
 #serde = { version = "1.0.229", features = ["derive"] }
 
-rig = "0.40.0"
+# TODO Update branch name when upgrade finish (upgrade started at rig v0.40.0)
+rig = "0.41.0"
 async-trait = "0.1.91"
 
 [features]

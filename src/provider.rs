@@ -8,9 +8,9 @@ use rig::providers::{
     anthropic as Anthropic,
     azure::{self as Azure, AzureOpenAIAuth},
     cohere as Cohere, deepseek as DeepSeek, gemini as Gemini, groq as Groq,
-    huggingface as HuggingFace, hyperbolic as Hyperbolic, mira as Mira, moonshot as Moonshot,
-    ollama as Ollama, openai as OpenAI, openrouter as OpenRouter, perplexity as Perplexity,
-    together as Together, xai as Xai,
+    huggingface as HuggingFace, hyperbolic as Hyperbolic, llamafile as LlamaFile, mira as Mira,
+    moonshot as Moonshot, ollama as Ollama, openai as OpenAI, openrouter as OpenRouter,
+    perplexity as Perplexity, together as Together, xai as Xai,
 };
 
 use crate::client::Client;
@@ -66,6 +66,12 @@ pub enum Provider {
     /// Alias: `hyperbolic`
     #[cfg_attr(feature = "serde", serde(rename = "hyperbolic"))]
     Hyperbolic,
+
+    /// LlamaFile API
+    ///
+    /// Alias: `llamafile`
+    #[cfg_attr(feature = "serde", serde(rename = "llamafile"))]
+    LlamaFile,
 
     /// Mira API
     ///
@@ -147,7 +153,7 @@ macro_rules! provider_client {
 		$self:expr, $api_key:expr, $custom_url:expr,
 		{$($custom_url_variant:ident),*}, {$($standard_variant:ident),*},
 		$azure_expr:expr, $anthropic_expr:expr, $ollama_expr:expr,
-        $mira_expr:expr
+        $mira_expr:expr, $llamafile_expr:expr
 	) => {
 		// get the rig provider module by lowercasing the variant name
 		match $self {
@@ -173,6 +179,7 @@ macro_rules! provider_client {
 			Provider::Azure => $azure_expr,
 			Provider::Ollama => $ollama_expr,
             Provider::Mira => $mira_expr,
+            Provider::LlamaFile => $llamafile_expr,
         }
 	}
 }
@@ -219,7 +226,18 @@ impl Provider {
                     )
                 }
             },
-            Client::Mira(Mira::Client::new(api_key)?)
+            Client::Mira(Mira::Client::new(api_key)?),
+            match custom_url {
+                None => Client::LlamaFile(LlamaFile::Client::new(Nothing)?),
+                Some(url) => {
+                    Client::LlamaFile(
+                        LlamaFile::Client::builder()
+                            .api_key(Nothing)
+                            .base_url(url)
+                            .build()?
+                    )
+                }
+            }
         ))
     }
 }

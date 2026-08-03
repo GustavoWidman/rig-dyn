@@ -17,7 +17,7 @@ pub enum Client {
     Groq(providers::groq::Client),
     HuggingFace(providers::huggingface::Client),
     Hyperbolic(providers::hyperbolic::Client),
-    // TODO Llamafile
+    LlamaFile(providers::llamafile::Client),
     // TODO MiniMax
     Mira(providers::mira::Client),
     // TODO Mistral
@@ -137,7 +137,7 @@ impl Client {
             self, model,
             {
                 Anthropic, Azure, Cohere, DeepSeek,
-                Gemini, Groq, Hyperbolic,
+                Gemini, Groq, Hyperbolic, LlamaFile,
                 Moonshot, OpenAI, Ollama, Perplexity, Xai,
                 HuggingFace, OpenRouter, Mira, Together
             }
@@ -160,7 +160,7 @@ impl Client {
         embedding_model!(
             self, model, input_type,
             {
-                Azure, Gemini, OpenAI, Ollama, Together, OpenRouter
+                Azure, Gemini, LlamaFile, OpenAI, Ollama, Together, OpenRouter
             },
             {
                 Anthropic, DeepSeek,
@@ -184,7 +184,7 @@ impl Client {
         embedding_model_with_ndims!(
             self, model, ndims, input_type,
             {
-                Azure, Gemini, OpenAI, Ollama, Together
+                Azure, Gemini, LlamaFile, OpenAI, Ollama, Together
             },
             {
                 Anthropic, DeepSeek,
