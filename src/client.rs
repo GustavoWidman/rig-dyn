@@ -18,9 +18,9 @@ pub enum Client {
     HuggingFace(providers::huggingface::Client),
     Hyperbolic(providers::hyperbolic::Client),
     LlamaFile(providers::llamafile::Client),
-    // TODO MiniMax
+    MiniMax(providers::minimax::Client),
     Mira(providers::mira::Client),
-    // TODO Mistral
+    Mistral(providers::mistral::Client),
     Moonshot(providers::moonshot::Client),
     Ollama(providers::ollama::Client),
     OpenAI(providers::openai::Client),
@@ -137,9 +137,9 @@ impl Client {
             self, model,
             {
                 Anthropic, Azure, Cohere, DeepSeek,
-                Gemini, Groq, Hyperbolic, LlamaFile,
+                Gemini, Groq, Hyperbolic, LlamaFile, MiniMax, Mira, Mistral,
                 Moonshot, OpenAI, Ollama, Perplexity, Xai,
-                HuggingFace, OpenRouter, Mira, Together
+                HuggingFace, OpenRouter, Together
             }
         )
     }
@@ -160,12 +160,11 @@ impl Client {
         embedding_model!(
             self, model, input_type,
             {
-                Azure, Gemini, LlamaFile, OpenAI, Ollama, Together, OpenRouter
+                Azure, Gemini, LlamaFile, Mistral, OpenAI, Ollama, Together, OpenRouter
             },
             {
-                Anthropic, DeepSeek,
-                Groq, Hyperbolic, Moonshot, Perplexity,
-                Mira, HuggingFace, Xai
+                Anthropic, DeepSeek, Groq, HuggingFace, Hyperbolic, MiniMax, Mira,
+                Moonshot, Perplexity, Xai
             },
             |client: &providers::cohere::Client| input_type.map(|input_type| {
                 Box::new(
@@ -184,12 +183,11 @@ impl Client {
         embedding_model_with_ndims!(
             self, model, ndims, input_type,
             {
-                Azure, Gemini, LlamaFile, OpenAI, Ollama, Together
+                Azure, Gemini, LlamaFile, Mistral, OpenAI, Ollama, Together
             },
             {
-                Anthropic, DeepSeek,
-                Groq, Hyperbolic, Moonshot, Perplexity,
-                Mira, HuggingFace, OpenRouter, Xai
+                Anthropic, DeepSeek, Groq, HuggingFace, Hyperbolic, MiniMax, Mira,
+                Moonshot, Perplexity, OpenRouter, Xai
             },
             |client: &providers::cohere::Client| input_type.map(|input_type| {
                 Box::new(

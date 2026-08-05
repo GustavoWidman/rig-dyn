@@ -8,9 +8,9 @@ use rig::providers::{
     anthropic as Anthropic,
     azure::{self as Azure, AzureOpenAIAuth},
     cohere as Cohere, deepseek as DeepSeek, gemini as Gemini, groq as Groq,
-    huggingface as HuggingFace, hyperbolic as Hyperbolic, llamafile as LlamaFile, mira as Mira,
-    moonshot as Moonshot, ollama as Ollama, openai as OpenAI, openrouter as OpenRouter,
-    perplexity as Perplexity, together as Together, xai as Xai,
+    huggingface as HuggingFace, hyperbolic as Hyperbolic, llamafile as LlamaFile,
+    minimax as MiniMax, mira as Mira, mistral as Mistral, moonshot as Moonshot, ollama as Ollama, openai as OpenAI,
+    openrouter as OpenRouter, perplexity as Perplexity, together as Together, xai as Xai,
 };
 
 use crate::client::Client;
@@ -73,11 +73,23 @@ pub enum Provider {
     #[cfg_attr(feature = "serde", serde(rename = "llamafile"))]
     LlamaFile,
 
+    /// MiniMax API
+    ///
+    /// Alias: `minimax`
+    #[cfg_attr(feature = "serde", serde(rename = "minimax"))]
+    MiniMax,
+
     /// Mira API
     ///
     /// Alias: `mira`
     #[cfg_attr(feature = "serde", serde(rename = "mira"))]
     Mira,
+
+    /// Mistral API
+    ///
+    /// Alias: `mistral`
+    #[cfg_attr(feature = "serde", serde(rename = "mistral"))]
+    Mistral,
 
     /// Moonshot API
     ///
@@ -148,6 +160,7 @@ impl Display for Provider {
     }
 }
 
+// TODO Unify Ollama and LlamaFile expressions (nothing_api_key)
 macro_rules! provider_client {
 	(
 		$self:expr, $api_key:expr, $custom_url:expr,
@@ -189,12 +202,12 @@ impl Provider {
         Ok(provider_client!(self, api_key, custom_url,
             {
                 Cohere, DeepSeek, Gemini,
-                Groq, Hyperbolic, Moonshot,
+                Groq, Hyperbolic, MiniMax, Mistral, Moonshot,
                 OpenAI, Perplexity, OpenRouter
             },
             {
-                Xai, HuggingFace, // todo add huggingface custom url (requires a custom subprovider)
-                Together
+                HuggingFace, // todo add huggingface custom url (requires a custom subprovider)
+                Together, Xai
             },
             match custom_url {
                 Some(url) => {
