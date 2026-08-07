@@ -9,8 +9,9 @@ use rig::providers::{
     azure::{self as Azure, AzureOpenAIAuth},
     cohere as Cohere, deepseek as DeepSeek, gemini as Gemini, groq as Groq,
     huggingface as HuggingFace, hyperbolic as Hyperbolic, llamafile as LlamaFile,
-    minimax as MiniMax, mira as Mira, mistral as Mistral, moonshot as Moonshot, ollama as Ollama, openai as OpenAI,
-    openrouter as OpenRouter, perplexity as Perplexity, together as Together, xai as Xai,
+    minimax as MiniMax, mira as Mira, mistral as Mistral, moonshot as Moonshot, ollama as Ollama,
+    openai as OpenAI, openrouter as OpenRouter, perplexity as Perplexity, together as Together,
+    xai as Xai, xiaomimimo as Xiaomimimo, zai as Zai
 };
 
 use crate::client::Client;
@@ -129,11 +130,29 @@ pub enum Provider {
     #[cfg_attr(feature = "serde", serde(rename = "together"))]
     Together,
 
+    // /// Voyage API
+    // ///
+    // /// Alias: `voyage`
+    // #[cfg_attr(feature = "serde", serde(rename = "voyage"))]
+    // Voyage,
+
     /// Xai API
     ///
     /// Alias: `xai`
     #[cfg_attr(feature = "serde", serde(rename = "xai"))]
     Xai,
+
+    /// Xiaomimimo API
+    ///
+    /// Alias: `xiaomimimo`
+    #[cfg_attr(feature = "serde", serde(rename = "xiaomimimo"))]
+    Xiaomimimo,
+
+    /// Zai API
+    ///
+    /// Alias: `zai`
+    #[cfg_attr(feature = "serde", serde(rename = "zai"))]
+    Zai,
 }
 
 impl Default for Provider {
@@ -203,7 +222,8 @@ impl Provider {
             {
                 Cohere, DeepSeek, Gemini,
                 Groq, Hyperbolic, MiniMax, Mistral, Moonshot,
-                OpenAI, Perplexity, OpenRouter
+                OpenAI, Perplexity, OpenRouter, 
+                Xiaomimimo, Zai // << TODO check these
             },
             {
                 HuggingFace, // todo add huggingface custom url (requires a custom subprovider)

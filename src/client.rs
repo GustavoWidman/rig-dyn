@@ -27,10 +27,11 @@ pub enum Client {
     OpenRouter(providers::openrouter::Client),
     Perplexity(providers::perplexity::Client),
     Together(providers::together::Client),
-    // TODO Voyage AI
+    // TODO No completion but embeddings, completion_model macro needs a refactor
+    // VoyageAI(providers::voyageai::Client),
     Xai(providers::xai::Client),
-    // TODO Xiao
-    // TODO Z.ai
+    Xiaomimimo(providers::xiaomimimo::Client),
+    Zai(providers::zai::Client),
 }
 
 #[derive(Clone)]
@@ -137,9 +138,9 @@ impl Client {
             self, model,
             {
                 Anthropic, Azure, Cohere, DeepSeek,
-                Gemini, Groq, Hyperbolic, LlamaFile, MiniMax, Mira, Mistral,
-                Moonshot, OpenAI, Ollama, Perplexity, Xai,
-                HuggingFace, OpenRouter, Together
+                Gemini, Groq, Hyperbolic, HuggingFace, LlamaFile, MiniMax, Mira, Mistral,
+                Moonshot, Ollama, OpenAI, OpenRouter, Perplexity,
+                Together, Xai, Xiaomimimo, Zai
             }
         )
     }
@@ -160,11 +161,11 @@ impl Client {
         embedding_model!(
             self, model, input_type,
             {
-                Azure, Gemini, LlamaFile, Mistral, OpenAI, Ollama, Together, OpenRouter
+                Azure, Gemini, LlamaFile, Mistral, OpenAI, Ollama, Together, OpenRouter //VoyageAI
             },
             {
                 Anthropic, DeepSeek, Groq, HuggingFace, Hyperbolic, MiniMax, Mira,
-                Moonshot, Perplexity, Xai
+                Moonshot, Perplexity, Xai, Xiaomimimo, Zai
             },
             |client: &providers::cohere::Client| input_type.map(|input_type| {
                 Box::new(
@@ -183,11 +184,11 @@ impl Client {
         embedding_model_with_ndims!(
             self, model, ndims, input_type,
             {
-                Azure, Gemini, LlamaFile, Mistral, OpenAI, Ollama, Together
+                Azure, Gemini, LlamaFile, Mistral, OpenAI, Ollama, Together //VoyageAI
             },
             {
                 Anthropic, DeepSeek, Groq, HuggingFace, Hyperbolic, MiniMax, Mira,
-                Moonshot, Perplexity, OpenRouter, Xai
+                Moonshot, Perplexity, OpenRouter, Xai, Xiaomimimo, Zai
             },
             |client: &providers::cohere::Client| input_type.map(|input_type| {
                 Box::new(
