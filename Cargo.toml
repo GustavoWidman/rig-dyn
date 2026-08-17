@@ -12,8 +12,6 @@ edition = "2024"
 serde_plain = { version = "1.0.2", optional = true }
 anyhow = "1.0.104"
 serde = { version = "1.0.229", optional = true, features = ["derive"] }
-
-# TODO Update branch name when upgrade finish (upgrade started at rig v0.40.0)
 rig = "0.41.0"
 async-trait = "0.1.92"
 
