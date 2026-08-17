@@ -179,7 +179,6 @@ impl Display for Provider {
     }
 }
 
-// TODO Unify Ollama and LlamaFile expressions (nothing_api_key)
 macro_rules! provider_client {
 	(
 		$self:expr, $api_key:expr, $custom_url:expr,
@@ -223,7 +222,7 @@ impl Provider {
                 Cohere, DeepSeek, Gemini,
                 Groq, Hyperbolic, MiniMax, Mistral, Moonshot,
                 OpenAI, Perplexity, OpenRouter, 
-                Xiaomimimo, Zai // << TODO check these
+                Xiaomimimo, Zai
             },
             {
                 HuggingFace, // todo add huggingface custom url (requires a custom subprovider)

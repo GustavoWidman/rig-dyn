@@ -15,6 +15,7 @@ use std::sync::Arc;
 
 /// Provides compatibility with previous rig-dyn version (v1.0.3)
 /// Note: FinalCompletionResponse was part of rig crate, but it was removed after v0.35.0.
+/// TODO: GetTokenUsage was removed in rig 0.42.0 (¬_¬)
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FinalCompletionResponse {
     pub usage: Usage,

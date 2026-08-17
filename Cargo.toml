@@ -10,17 +10,12 @@ edition = "2024"
 
 [dependencies]
 serde_plain = { version = "1.0.2", optional = true }
-#serde_plain = { version = "1.0.2" }
-
 anyhow = "1.0.104"
-
-# TODO schemars (in my thesis requires this version)
-serde = { version = "1.0.194", optional = true, features = ["derive"] }
-#serde = { version = "1.0.229", features = ["derive"] }
+serde = { version = "1.0.229", optional = true, features = ["derive"] }
 
 # TODO Update branch name when upgrade finish (upgrade started at rig v0.40.0)
 rig = "0.41.0"
-async-trait = "0.1.91"
+async-trait = "0.1.92"
 
 [features]
 default =  ["dep:serde"]
