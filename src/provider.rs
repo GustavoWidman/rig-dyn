@@ -3,15 +3,16 @@ use serde::{Deserialize, Serialize};
 #[cfg(feature = "serde")]
 use std::fmt::Display;
 
+use rig::client::Nothing;
 use rig::providers::{
     anthropic as Anthropic,
     azure::{self as Azure, AzureOpenAIAuth},
-    cohere as Cohere, deepseek as DeepSeek, galadriel as Galadriel, gemini as Gemini, groq as Groq,
-    huggingface as HuggingFace, hyperbolic as Hyperbolic, mira as Mira, moonshot as Moonshot,
-    ollama as Ollama, openai as OpenAI, openrouter as OpenRouter, perplexity as Perplexity,
-    together as Together, xai as Xai,
+    cohere as Cohere, deepseek as DeepSeek, gemini as Gemini, groq as Groq,
+    huggingface as HuggingFace, hyperbolic as Hyperbolic, llamafile as LlamaFile,
+    minimax as MiniMax, mira as Mira, mistral as Mistral, moonshot as Moonshot, ollama as Ollama,
+    openai as OpenAI, openrouter as OpenRouter, perplexity as Perplexity, together as Together,
+    xai as Xai, xiaomimimo as Xiaomimimo, zai as Zai
 };
-use rig::client::Nothing;
 
 use crate::client::Client;
 
@@ -42,12 +43,6 @@ pub enum Provider {
     #[cfg_attr(feature = "serde", serde(rename = "deepseek"))]
     DeepSeek,
 
-    /// Galadriel API
-    ///
-    /// Alias: `galadriel`
-    #[cfg_attr(feature = "serde", serde(rename = "galadriel"))]
-    Galadriel,
-
     /// Gemini API
     ///
     /// Alias: `gemini`
@@ -73,11 +68,29 @@ pub enum Provider {
     #[cfg_attr(feature = "serde", serde(rename = "hyperbolic"))]
     Hyperbolic,
 
+    /// LlamaFile API
+    ///
+    /// Alias: `llamafile`
+    #[cfg_attr(feature = "serde", serde(rename = "llamafile"))]
+    LlamaFile,
+
+    /// MiniMax API
+    ///
+    /// Alias: `minimax`
+    #[cfg_attr(feature = "serde", serde(rename = "minimax"))]
+    MiniMax,
+
     /// Mira API
     ///
     /// Alias: `mira`
     #[cfg_attr(feature = "serde", serde(rename = "mira"))]
     Mira,
+
+    /// Mistral API
+    ///
+    /// Alias: `mistral`
+    #[cfg_attr(feature = "serde", serde(rename = "mistral"))]
+    Mistral,
 
     /// Moonshot API
     ///
@@ -117,11 +130,29 @@ pub enum Provider {
     #[cfg_attr(feature = "serde", serde(rename = "together"))]
     Together,
 
+    // /// Voyage API
+    // ///
+    // /// Alias: `voyage`
+    // #[cfg_attr(feature = "serde", serde(rename = "voyage"))]
+    // Voyage,
+
     /// Xai API
     ///
     /// Alias: `xai`
     #[cfg_attr(feature = "serde", serde(rename = "xai"))]
     Xai,
+
+    /// Xiaomimimo API
+    ///
+    /// Alias: `xiaomimimo`
+    #[cfg_attr(feature = "serde", serde(rename = "xiaomimimo"))]
+    Xiaomimimo,
+
+    /// Zai API
+    ///
+    /// Alias: `zai`
+    #[cfg_attr(feature = "serde", serde(rename = "zai"))]
+    Zai,
 }
 
 impl Default for Provider {
@@ -152,8 +183,8 @@ macro_rules! provider_client {
 	(
 		$self:expr, $api_key:expr, $custom_url:expr,
 		{$($custom_url_variant:ident),*}, {$($standard_variant:ident),*},
-		$azure_expr:expr, $anthropic_expr:expr, $galadriel_expr:expr, $ollama_expr:expr,
-        $mira_expr:expr
+		$azure_expr:expr, $anthropic_expr:expr, $ollama_expr:expr,
+        $mira_expr:expr, $llamafile_expr:expr
 	) => {
 		// get the rig provider module by lowercasing the variant name
 		match $self {
@@ -177,9 +208,9 @@ macro_rules! provider_client {
             )*
 			Provider::Anthropic => $anthropic_expr,
 			Provider::Azure => $azure_expr,
-			Provider::Galadriel => $galadriel_expr,
 			Provider::Ollama => $ollama_expr,
             Provider::Mira => $mira_expr,
+            Provider::LlamaFile => $llamafile_expr,
         }
 	}
 }
@@ -189,12 +220,13 @@ impl Provider {
         Ok(provider_client!(self, api_key, custom_url,
             {
                 Cohere, DeepSeek, Gemini,
-                Groq, Hyperbolic, Moonshot,
-                OpenAI, Perplexity, OpenRouter
+                Groq, Hyperbolic, MiniMax, Mistral, Moonshot,
+                OpenAI, Perplexity, OpenRouter, 
+                Xiaomimimo, Zai
             },
             {
-                Xai, HuggingFace, // todo add huggingface custom url (requires a custom subprovider)
-                Together
+                HuggingFace, // todo add huggingface custom url (requires a custom subprovider)
+                Together, Xai
             },
             match custom_url {
                 Some(url) => {
@@ -216,17 +248,6 @@ impl Provider {
                 }
             },
             match custom_url {
-                None => Client::Galadriel(Galadriel::Client::new(api_key)?),
-                Some(url) => {
-                    Client::Galadriel(
-                        Galadriel::Client::builder()
-                            .api_key(api_key)
-                            .base_url(url)
-                            .build()?
-                    )
-                }
-            },
-            match custom_url {
                 None => Client::Ollama(Ollama::Client::new(Nothing)?),
                 Some(url) => {
                     Client::Ollama(
@@ -237,7 +258,18 @@ impl Provider {
                     )
                 }
             },
-            Client::Mira(Mira::Client::new(api_key)?)
+            Client::Mira(Mira::Client::new(api_key)?),
+            match custom_url {
+                None => Client::LlamaFile(LlamaFile::Client::new(Nothing)?),
+                Some(url) => {
+                    Client::LlamaFile(
+                        LlamaFile::Client::builder()
+                            .api_key(Nothing)
+                            .base_url(url)
+                            .build()?
+                    )
+                }
+            }
         ))
     }
 }

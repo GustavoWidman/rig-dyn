@@ -41,6 +41,7 @@ async fn main() -> Result<()> {
         temperature: Some(0.7),
         tool_choice: None,
         tools: vec![],
+        record_telemetry_content: false,
     };
 
     let response = complete_with_rig_model(&completion_model, request).await?;

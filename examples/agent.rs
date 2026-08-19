@@ -1,10 +1,7 @@
 use std::env;
 
 use anyhow::Result;
-use rig::{
-    client::CompletionClient,
-    completion::Prompt,
-};
+use rig::prelude::*;
 use rig_dyn::Provider;
 
 #[tokio::main]

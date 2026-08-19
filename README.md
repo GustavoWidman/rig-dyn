@@ -21,24 +21,21 @@ Add rig-dyn to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-rig-dyn = "1.0.1"
+rig-dyn = "1.0.4"
 ```
 
 ## Usage
 
-### Basic Example
+### Basic Examples
+
+Completion example:
 
 ```rust
 use std::env;
 
 use anyhow::Result;
-use rig::{
-    OneOrMany,
-    client::CompletionClient,
-    completion::CompletionRequest,
-    message::{self, Message},
-};
-use rig_dyn::Provider;
+use rig::{completion::CompletionRequest, message, prelude::*};
+use rig_dyn::{CompletionModel, Provider};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -59,6 +56,7 @@ async fn main() -> Result<()> {
         temperature: Some(0.7),
         tool_choice: None,
         tools: vec![],
+        record_telemetry_content: false,
     };
 
     let response = completion_model.completion(request).await?.choice.first();
@@ -67,12 +65,41 @@ async fn main() -> Result<()> {
         message::AssistantContent::Text(content) => {
             println!("{}", content.text);
         }
-        _ => {}
+        _ => {
+            eprintln!("Error, no response.");
+        }
     }
 
     Ok(())
 }
 ```
+
+Agent example:
+
+```rust
+use anyhow::Result;
+use rig::prelude::*;
+use rig_dyn::Provider;
+
+#[tokio::main]
+async fn main() -> Result<()> {
+    let provider = Provider::Ollama;
+    let api_key = "";
+
+    let client = provider.client(&api_key, None)?;
+    let agent = client
+        .agent("qwen3.5:0.8b")
+        .preamble("You are a helpful assistant.")
+        .temperature(0.7)
+        .build();
+
+    let response = agent.prompt("Hello, World!").await?;
+    println!("{response}");
+
+    Ok(())
+}
+```
+
 
 ### Using the `serde` feature
 
@@ -81,7 +108,7 @@ The `serde` feature enables serialization and deserialization of the `Provider` 
 ```rust
 // Enable the serde feature in your Cargo.toml
 // [dependencies]
-// rig-dyn = { version = "0.1.0", features = ["serde"] }
+// rig-dyn = { version = "1.0.4", features = ["serde"] }
 
 use anyhow::Result;
 use rig_dyn::Provider;

@@ -1,5 +1,7 @@
-use crate::traits::{CompletionModel, DynEmbeddingModel, RigCompletionModelAdapter};
-use rig::client::FinalCompletionResponse;
+use crate::traits::{
+    CompletionModel, DynEmbeddingModel, FinalCompletionResponse, RigCompletionModelAdapter,
+};
+
 use rig::client::{CompletionClient, EmbeddingsClient};
 use rig::completion::{self, CompletionError, CompletionRequest, CompletionResponse};
 use rig::providers;
@@ -11,19 +13,25 @@ pub enum Client {
     Azure(providers::azure::Client),
     Cohere(providers::cohere::Client),
     DeepSeek(providers::deepseek::Client),
-    Galadriel(providers::galadriel::Client),
     Gemini(providers::gemini::Client),
     Groq(providers::groq::Client),
     HuggingFace(providers::huggingface::Client),
     Hyperbolic(providers::hyperbolic::Client),
+    LlamaFile(providers::llamafile::Client),
+    MiniMax(providers::minimax::Client),
     Mira(providers::mira::Client),
+    Mistral(providers::mistral::Client),
     Moonshot(providers::moonshot::Client),
+    Ollama(providers::ollama::Client),
     OpenAI(providers::openai::Client),
     OpenRouter(providers::openrouter::Client),
-    Ollama(providers::ollama::Client),
     Perplexity(providers::perplexity::Client),
     Together(providers::together::Client),
+    // TODO No completion but embeddings, completion_model macro needs a refactor
+    // VoyageAI(providers::voyageai::Client),
     Xai(providers::xai::Client),
+    Xiaomimimo(providers::xiaomimimo::Client),
+    Zai(providers::zai::Client),
 }
 
 #[derive(Clone)]
@@ -47,8 +55,9 @@ impl completion::CompletionModel for RigClientCompletionModelAdapter {
     fn completion(
         &self,
         request: CompletionRequest,
-    ) -> impl std::future::Future<Output = Result<CompletionResponse<Self::Response>, CompletionError>>
-           + rig::wasm_compat::WasmCompatSend {
+    ) -> impl std::future::Future<
+        Output = Result<CompletionResponse<Self::Response>, CompletionError>,
+    > + rig::wasm_compat::WasmCompatSend {
         let client = self.client.clone();
         let model = self.model.clone();
 
@@ -129,9 +138,9 @@ impl Client {
             self, model,
             {
                 Anthropic, Azure, Cohere, DeepSeek,
-                Galadriel, Gemini, Groq, Hyperbolic,
-                Moonshot, OpenAI, Ollama, Perplexity, Xai,
-                HuggingFace, OpenRouter, Mira, Together
+                Gemini, Groq, Hyperbolic, HuggingFace, LlamaFile, MiniMax, Mira, Mistral,
+                Moonshot, Ollama, OpenAI, OpenRouter, Perplexity,
+                Together, Xai, Xiaomimimo, Zai
             }
         )
     }
@@ -152,12 +161,11 @@ impl Client {
         embedding_model!(
             self, model, input_type,
             {
-                Azure, Gemini, OpenAI, Ollama, Together, OpenRouter
+                Azure, Gemini, LlamaFile, Mistral, OpenAI, Ollama, Together, OpenRouter //VoyageAI
             },
             {
-                Anthropic, DeepSeek, Galadriel,
-                Groq, Hyperbolic, Moonshot, Perplexity,
-                Mira, HuggingFace, Xai
+                Anthropic, DeepSeek, Groq, HuggingFace, Hyperbolic, MiniMax, Mira,
+                Moonshot, Perplexity, Xai, Xiaomimimo, Zai
             },
             |client: &providers::cohere::Client| input_type.map(|input_type| {
                 Box::new(
@@ -176,12 +184,11 @@ impl Client {
         embedding_model_with_ndims!(
             self, model, ndims, input_type,
             {
-                Azure, Gemini, OpenAI, Ollama, Together
+                Azure, Gemini, LlamaFile, Mistral, OpenAI, Ollama, Together //VoyageAI
             },
             {
-                Anthropic, DeepSeek, Galadriel,
-                Groq, Hyperbolic, Moonshot, Perplexity,
-                Mira, HuggingFace, OpenRouter, Xai
+                Anthropic, DeepSeek, Groq, HuggingFace, Hyperbolic, MiniMax, Mira,
+                Moonshot, Perplexity, OpenRouter, Xai, Xiaomimimo, Zai
             },
             |client: &providers::cohere::Client| input_type.map(|input_type| {
                 Box::new(
